@@ -1,10 +1,24 @@
-
 import { useState } from "react";
 import { WorkoutCard } from "@/components/WorkoutCard";
 import { WeekProgress } from "@/components/WeekProgress";
 import { useToast } from "@/hooks/use-toast";
+import { Button } from "@/components/ui/button";
+import { Plus, Edit } from "lucide-react";
+import { WorkoutDialog } from "@/components/WorkoutDialog";
 
-const workoutData = [
+export interface Exercise {
+  name: string;
+  sets: number;
+  reps: number;
+  restTime: number;
+}
+
+export interface Workout {
+  day: string;
+  exercises: Exercise[];
+}
+
+const defaultWorkouts = [
   {
     day: "Segunda",
     exercises: [
@@ -64,7 +78,10 @@ const workoutData = [
 ];
 
 const Index = () => {
+  const [workouts, setWorkouts] = useState<Workout[]>(defaultWorkouts);
   const [completedWorkouts, setCompletedWorkouts] = useState<string[]>([]);
+  const [editingWorkout, setEditingWorkout] = useState<Workout | null>(null);
+  const [dialogOpen, setDialogOpen] = useState(false);
   const { toast } = useToast();
 
   const handleComplete = (day: string) => {
@@ -84,32 +101,80 @@ const Index = () => {
     });
   };
 
+  const handleSaveWorkout = (workout: Workout) => {
+    setWorkouts((prev) => {
+      const index = prev.findIndex((w) => w.day === workout.day);
+      if (index >= 0) {
+        const newWorkouts = [...prev];
+        newWorkouts[index] = workout;
+        return newWorkouts;
+      }
+      return [...prev, workout];
+    });
+    setEditingWorkout(null);
+    setDialogOpen(false);
+    toast({
+      description: `Treino de ${workout.day} atualizado com sucesso!`,
+    });
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-4xl mx-auto p-4 space-y-6">
-        <div className="space-y-2">
-          <h1 className="text-3xl font-bold tracking-tight">Meus Treinos</h1>
-          <p className="text-muted-foreground">
-            Acompanhe seus treinos semanais e marque conforme completa
-          </p>
+        <div className="flex items-center justify-between">
+          <div className="space-y-2">
+            <h1 className="text-3xl font-bold tracking-tight">Meus Treinos</h1>
+            <p className="text-muted-foreground">
+              Acompanhe seus treinos semanais e marque conforme completa
+            </p>
+          </div>
+          <Button 
+            onClick={() => {
+              setEditingWorkout(null);
+              setDialogOpen(true);
+            }}
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            Novo Treino
+          </Button>
         </div>
 
         <WeekProgress 
           completedWorkouts={completedWorkouts.length} 
-          totalWorkouts={workoutData.length} 
+          totalWorkouts={workouts.length} 
         />
 
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {workoutData.map((workout) => (
-            <WorkoutCard
-              key={workout.day}
-              day={workout.day}
-              exercises={workout.exercises}
-              isCompleted={completedWorkouts.includes(workout.day)}
-              onComplete={() => handleComplete(workout.day)}
-            />
+          {workouts.map((workout) => (
+            <div key={workout.day} className="relative group">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="absolute right-2 top-2 opacity-0 group-hover:opacity-100 transition-opacity z-10"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setEditingWorkout(workout);
+                  setDialogOpen(true);
+                }}
+              >
+                <Edit className="w-4 h-4" />
+              </Button>
+              <WorkoutCard
+                day={workout.day}
+                exercises={workout.exercises}
+                isCompleted={completedWorkouts.includes(workout.day)}
+                onComplete={() => handleComplete(workout.day)}
+              />
+            </div>
           ))}
         </div>
+
+        <WorkoutDialog
+          open={dialogOpen}
+          onOpenChange={setDialogOpen}
+          workout={editingWorkout}
+          onSave={handleSaveWorkout}
+        />
       </div>
     </div>
   );
