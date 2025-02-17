@@ -141,7 +141,7 @@ const Index = () => {
         </div>
 
         <WeekProgress 
-          completedWorkouts={completedWorkouts.length} 
+          completedWorkouts={completedWorkouts} 
           totalWorkouts={workouts.length} 
         />
 
