@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -13,7 +12,7 @@ interface WorkoutDialogProps {
   onSave: (workout: Workout) => void;
 }
 
-const days = ["Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado", "Domingo"];
+const days = ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"];
 
 export function WorkoutDialog({ open, onOpenChange, workout, onSave }: WorkoutDialogProps) {
   const [currentWorkout, setCurrentWorkout] = useState<Workout>({

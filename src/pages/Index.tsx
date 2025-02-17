@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { WorkoutCard } from "@/components/WorkoutCard";
 import { WeekProgress } from "@/components/WeekProgress";
@@ -19,6 +20,14 @@ export interface Workout {
 }
 
 const defaultWorkouts = [
+  {
+    day: "Domingo",
+    exercises: [
+      { name: "Abdominal Reto", sets: 4, reps: 20, restTime: 45 },
+      { name: "Prancha", sets: 3, reps: 30, restTime: 45 },
+      { name: "Elevação de Pernas", sets: 3, reps: 15, restTime: 45 },
+    ],
+  },
   {
     day: "Segunda",
     exercises: [
@@ -65,14 +74,6 @@ const defaultWorkouts = [
       { name: "Bíceps Barra", sets: 4, reps: 12, restTime: 60 },
       { name: "Bíceps Martelo", sets: 3, reps: 12, restTime: 45 },
       { name: "Tríceps Testa", sets: 4, reps: 12, restTime: 60 },
-    ],
-  },
-  {
-    day: "Domingo",
-    exercises: [
-      { name: "Abdominal Reto", sets: 4, reps: 20, restTime: 45 },
-      { name: "Prancha", sets: 3, reps: 30, restTime: 45 },
-      { name: "Elevação de Pernas", sets: 3, reps: 15, restTime: 45 },
     ],
   },
 ];
